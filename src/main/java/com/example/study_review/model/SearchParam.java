@@ -1,4 +1,4 @@
-package com.example.study_review.controller.model;
+package com.example.study_review.model;
 
 // 여러개의 parameter를 하나씩 getParameter 어노테이션을 안 쓰고 받아오도록
 public class SearchParam {

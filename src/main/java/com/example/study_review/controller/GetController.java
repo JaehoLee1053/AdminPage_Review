@@ -1,6 +1,6 @@
 package com.example.study_review.controller;
 
-import com.example.study_review.controller.model.SearchParam;
+import com.example.study_review.model.SearchParam;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
