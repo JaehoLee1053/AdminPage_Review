@@ -3,10 +3,13 @@ package com.example.study_review.repository;
 import com.example.study_review.StudyReviewApplication;
 import com.example.study_review.StudyReviewApplicationTests;
 import com.example.study_review.model.entity.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -53,8 +56,20 @@ public class UserRepositoryTest extends StudyReviewApplicationTests {
 
     }
 
+    @Test
+    @Transactional // 롤
     public void delete() {
+        Optional<User> user = userRepository.findById(1L);
 
+        Assertions.assertTrue(user.isPresent());
+
+        user.ifPresent(selectUser -> {
+            userRepository.delete(selectUser);
+        });
+
+        Optional<User> deleteUser = userRepository.findById(2L);
+
+        Assertions.assertFalse(deleteUser.isPresent());
     }
 
 }
