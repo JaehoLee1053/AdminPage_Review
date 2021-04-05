@@ -1,13 +1,14 @@
 package com.example.study_review.repository;
 
 import com.example.study_review.StudyReviewApplication;
+import com.example.study_review.StudyReviewApplicationTests;
 import com.example.study_review.model.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
-public class UserRepositoryTest extends StudyReviewApplication {
+public class UserRepositoryTest extends StudyReviewApplicationTests {
 
     // 대표적인 디자인 패턴 DI (Dependency Injection)
     @Autowired
