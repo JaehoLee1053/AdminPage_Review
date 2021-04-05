@@ -17,11 +17,11 @@ public class UserRepositoryTest extends StudyReviewApplicationTests {
     @Test
     public void create() {
         User user = new User();
-        user.setAccount("TestUser01");
+        user.setAccount("TestUser02");
         user.setEmail("TestUser01@gmail.com");
-        user.setPhoneNumber("010-1111-1111");
+        user.setPhoneNumber("010-1111-2222");
         user.setCreatedAt(LocalDateTime.now());
-        user.setCreatedBy("TestUser01");
+        user.setCreatedBy("TestUser02");
 
         User newUser = userRepository.save(user);
         // save() : 받은 타입을 return, DB에 저장된 객체 return id도 붙어나옴
