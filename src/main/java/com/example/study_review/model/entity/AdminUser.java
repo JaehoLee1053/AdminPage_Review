@@ -4,18 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity // == table, Entity 임을 명시
-public class User {
+@AllArgsConstructor
+@Entity
+public class AdminUser {
 
-    @Id // Primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL 옵
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String account;
@@ -24,9 +26,13 @@ public class User {
 
     private String status;
 
-    private String email;
+    private String role;
 
-    private String phoneNumber;
+    private LocalDateTime lastLoginAt;
+
+    private LocalDateTime passwordUpdatedAt;
+
+    private int loginFailCount;
 
     private LocalDateTime registeredAt;
 
@@ -39,14 +45,5 @@ public class User {
     private LocalDateTime updatedAt;
 
     private String updatedBy;
-
-    // 1 : N
-
-    // LAZY = 지연로딩, EAGER = 즉시로딩
-    // LAZY = SELECT * FROM item where id = ?
-    // EAGER = 1:1에 추천
-    // item_id = order_detail.item_id
-    // user_id = order_detail.user_id
-    // where item.id = ?
 
 }
