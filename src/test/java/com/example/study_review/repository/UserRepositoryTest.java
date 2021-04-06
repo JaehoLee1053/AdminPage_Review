@@ -2,6 +2,7 @@ package com.example.study_review.repository;
 
 import com.example.study_review.StudyReviewApplication;
 import com.example.study_review.StudyReviewApplicationTests;
+import com.example.study_review.model.entity.Item;
 import com.example.study_review.model.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,11 +35,15 @@ public class UserRepositoryTest extends StudyReviewApplicationTests {
     }
 
     @Test
+    @Transactional
     public void read() {
-        Optional<User> user = userRepository.findById(2L);
+        // findById : select * from user where id = ?
+        Optional<User> user = userRepository.findByAccountAndEmail("TestUser02", "TestUser01@gmail.com");
         user.ifPresent(selectUser -> {
-            System.out.println("user : " + selectUser);
-            System.out.println("email : " + selectUser.getEmail());
+            selectUser.getOrderDetailLsit().stream().forEach(detail -> {
+                Item item = detail.getItem();
+                System.out.println(item);
+            });
         });
     }
 

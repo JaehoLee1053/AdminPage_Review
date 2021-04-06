@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -33,5 +31,17 @@ public class User {
     private LocalDateTime updatedAt;
 
     private String updatedBy;
+
+    // 1 : N
+
+    // LAZY = 지연로딩, EAGER = 즉시로딩
+    // LAZY = SELECT * FROM item where id = ?
+    // EAGER = 1:1에 추천
+    // item_id = order_detail.item_id
+    // user_id = order_detail.user_id
+    // where item.id = ?
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<OrderDetail> orderDetailLsit;
 
 }
