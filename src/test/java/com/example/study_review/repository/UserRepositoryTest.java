@@ -22,29 +22,39 @@ public class UserRepositoryTest extends StudyReviewApplicationTests {
 
     @Test
     public void create() {
+
+        String account = "Test01";
+        String password = "Test01";
+        String status = "REGISTERED";
+        String email = "Test01@gmail.com";
+        String phoneNumber = "010-1111-2222";
+        LocalDateTime registeredAt = LocalDateTime.now();
+        LocalDateTime createdAt = LocalDateTime.now();
+        String createdBy = "AdminServer";
+
         User user = new User();
-        user.setAccount("TestUser02");
-        user.setEmail("TestUser01@gmail.com");
-        user.setPhoneNumber("010-1111-2222");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setCreatedBy("TestUser02");
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setStatus(status);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setRegisteredAt(registeredAt);
+        user.setCreatedAt(createdAt);
+        user.setCreatedBy(createdBy);
 
         User newUser = userRepository.save(user);
-        // save() : 받은 타입을 return, DB에 저장된 객체 return id도 붙어나옴
-        System.out.println("newUser : " + newUser);
+        Assertions.assertNotNull(newUser);
+
     }
 
     @Test
     @Transactional
     public void read() {
-        // findById : select * from user where id = ?
-        Optional<User> user = userRepository.findByAccountAndEmail("TestUser02", "TestUser01@gmail.com");
-        user.ifPresent(selectUser -> {
-            selectUser.getOrderDetailLsit().stream().forEach(detail -> {
-                Item item = detail.getItem();
-                System.out.println(item);
-            });
-        });
+
+        User user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1111-2222");
+
+        Assertions.assertNotNull(user);
+
     }
 
     @Test
