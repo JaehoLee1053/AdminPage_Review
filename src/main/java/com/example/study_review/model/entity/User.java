@@ -1,8 +1,12 @@
 package com.example.study_review.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity // == table, Entity 임을 명시
+@EntityListeners(AuditingEntityListener.class)
+@ToString(exclude = {"orderGroupList"})
+@Builder
+@Accessors(chain = true)
 public class User {
 
     @Id // Primary key
@@ -32,15 +40,21 @@ public class User {
 
     private LocalDateTime unregisteredAt;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
+    @CreatedBy
     private String createdBy;
 
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @LastModifiedBy
     private String updatedBy;
 
     // 1 : N
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<OrderGroup> orderGroupList;
 
     // LAZY = 지연로딩, EAGER = 즉시로딩
     // LAZY = SELECT * FROM item where id = ?
