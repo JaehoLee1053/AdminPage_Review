@@ -1,10 +1,13 @@
 package com.example.study_review.model.network.request;
 
+import com.example.study_review.model.enumclass.OrderGroupOrderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,7 +21,8 @@ public class OrderGroupApiRequest {
 
     private String status;
 
-    private String orderType;
+    @Enumerated(EnumType.STRING)
+    private OrderGroupOrderType orderType;
 
     private String revAddress;
 
