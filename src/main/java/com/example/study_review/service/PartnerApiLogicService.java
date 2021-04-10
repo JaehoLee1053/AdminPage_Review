@@ -2,10 +2,16 @@ package com.example.study_review.service;
 
 import com.example.study_review.model.entity.Partner;
 import com.example.study_review.model.network.Header;
+import com.example.study_review.model.network.Pagination;
 import com.example.study_review.model.network.request.PartnerApiRequest;
 import com.example.study_review.model.network.response.PartnerApiResponse;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PartnerApiLogicService extends BaseService<PartnerApiRequest, PartnerApiResponse, Partner> {
@@ -19,6 +25,7 @@ public class PartnerApiLogicService extends BaseService<PartnerApiRequest, Partn
     public Header<PartnerApiResponse> read(Long id) {
         return baseRepository.findById(id)
                 .map(partner -> response(partner))
+                .map(Header::OK)
                 .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
@@ -32,7 +39,7 @@ public class PartnerApiLogicService extends BaseService<PartnerApiRequest, Partn
         return null;
     }
 
-    private Header<PartnerApiResponse> response(Partner partner) {
+    private PartnerApiResponse response(Partner partner) {
         PartnerApiResponse body = PartnerApiResponse.builder()
                 .id(partner.getId())
                 .name(partner.getName())
@@ -47,7 +54,25 @@ public class PartnerApiLogicService extends BaseService<PartnerApiRequest, Partn
                 .build();
 
 
-        return Header.OK(body);
+        return body;
     }
 
+    @Override
+    public Header<List<PartnerApiResponse>> search(Pageable pageable) {
+
+        Page<Partner> partners = baseRepository.findAll(pageable);
+
+        List<PartnerApiResponse> partnersApiResponseList = partners.stream()
+                .map(partner -> response(partner))
+                .collect(Collectors.toList());
+
+        Pagination pagination = Pagination.builder()
+                .totalPages(partners.getTotalPages())
+                .totalElements(partners.getTotalElements())
+                .currentPage(partners.getNumber())
+                .currentElements(partners.getNumberOfElements())
+                .build();
+
+        return Header.OK(partnersApiResponseList, pagination);
+    }
 }
