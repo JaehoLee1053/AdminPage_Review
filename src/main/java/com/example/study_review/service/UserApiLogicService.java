@@ -1,12 +1,18 @@
 package com.example.study_review.service;
 
+import com.example.study_review.controller.api.OrderGroupApiController;
 import com.example.study_review.ifs.CrudInterface;
+import com.example.study_review.model.entity.Item;
+import com.example.study_review.model.entity.OrderGroup;
 import com.example.study_review.model.entity.User;
 import com.example.study_review.model.enumclass.UserStatus;
 import com.example.study_review.model.network.Header;
 import com.example.study_review.model.network.Pagination;
 import com.example.study_review.model.network.request.UserApiRequest;
+import com.example.study_review.model.network.response.ItemApiResponse;
+import com.example.study_review.model.network.response.OrderGroupApiResponse;
 import com.example.study_review.model.network.response.UserApiResponse;
+import com.example.study_review.model.network.response.UserOrderInfoApiResponse;
 import com.example.study_review.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +31,12 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderGroupApiLogicService orderGroupApiLogicService;
+
+    @Autowired
+    private ItemApiLogicService itemApiLogicService;
 
     // 1. request data 가져오기
     // 2. user 생성
@@ -80,10 +92,10 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
                     .setUnregisteredAt(userApiRequest.getUnregisteredAt());
             return user;
         })
-        .map(user -> baseRepository.save(user)) // 3. update
-        .map(updateUser -> response(updateUser)) // 4. userApiResponse
-        .map(Header::OK)
-        .orElseGet(() -> Header.ERROR("데이터 없음"));
+                .map(user -> baseRepository.save(user)) // 3. update
+                .map(updateUser -> response(updateUser)) // 4. userApiResponse
+                .map(Header::OK)
+                .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
     @Override
@@ -135,6 +147,39 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
 
         // List<UserApiResponse> --> Header<List<UserApiResponse>>
         return Header.OK(userApiResponseList, pagination);
+
+    }
+
+    public Header<UserOrderInfoApiResponse> orderInfo(Long id) {
+
+        // user
+        User user = userRepository.getOne(id);
+        UserApiResponse userApiResponse = response(user);
+
+        // orderGroup
+        List<OrderGroup> orderGroupList = user.getOrderGroupList();
+        List<OrderGroupApiResponse> orderGroupApiResponseList = orderGroupList.stream()
+                .map(orderGroup -> {
+                        OrderGroupApiResponse orderGroupApiResponse = orderGroupApiLogicService.response(orderGroup);
+
+                        // item
+                        List<ItemApiResponse> itemApiResponseList = orderGroup.getOrderDetailList().stream()
+                                .map(detail -> detail.getItem())
+                                .map(item -> itemApiLogicService.response(item))
+                                .collect(Collectors.toList());
+
+                        orderGroupApiResponse.setItemApiResponseList(itemApiResponseList);
+                        return orderGroupApiResponse;
+                })
+                .collect(Collectors.toList());
+
+        userApiResponse.setOrderGroupApiResponseList(orderGroupApiResponseList);
+
+        UserOrderInfoApiResponse userOrderInfoApiResponse = UserOrderInfoApiResponse.builder()
+                .userApiResponse(userApiResponse)
+                .build();
+
+        return Header.OK(userOrderInfoApiResponse);
 
     }
 }
