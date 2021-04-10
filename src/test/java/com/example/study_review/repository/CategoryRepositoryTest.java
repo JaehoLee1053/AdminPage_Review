@@ -12,7 +12,6 @@ import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Repository
 public class CategoryRepositoryTest extends StudyReviewApplicationTests {
 
     @Autowired

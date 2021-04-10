@@ -1,6 +1,6 @@
 package com.example.study_review.model.network.request;
 
-import com.example.study_review.model.enumclass.OrderGroupOrderType;
+import com.example.study_review.model.enumclass.OrderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class OrderGroupApiRequest {
     private String status;
 
     @Enumerated(EnumType.STRING)
-    private OrderGroupOrderType orderType;
+    private OrderType orderType;
 
     private String revAddress;
 
